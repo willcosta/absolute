@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="testAsDoc" default="asdoc">
+	<!-- import the settings -->
+	<property file="${basedir}/build_project.properties"/>
+ 
+	<target name="asdoc">
+		<!-- delete all files in the doc dir -->
+		<delete includeemptydirs="true">
+			<fileset dir="${project.doc}" includes="**/*" />
+		</delete>
+		<!-- create docs -->
+		<exec executable="${common.asdoc}" failonerror='false'> 
+		    <arg line="	-doc-sources '${project.src}' 
+		    		-output '${project.doc}' 
+		    		-main-title 'Absolute Actionscript Lib' 
+		    		-window-title 'Absolute Actionscript Lib'" /> 
+		</exec>
+	</target>
+ 
+</project>

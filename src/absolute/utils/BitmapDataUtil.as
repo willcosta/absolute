@@ -1,0 +1,20 @@
+package absolute.utils {	import flash.display.BitmapData;	import flash.display.DisplayObject;	import flash.geom.Matrix;	import flash.geom.Point;	import flash.geom.Rectangle;	/**	 * @author Will Costa	 * @author http://www.willcosta.net	 */	public class BitmapDataUtil {		//----------------------------------		//  Public Functions		//----------------------------------				/**		 * Scrolls a bitmapdata seamlessly		 * @param bitmapData The bitmapdata tha you'll scroll		 * @param scrollX The amount of pixels that you want to scroll in the x axis;		 * @param scrollY The amount of pixels that you want to scroll in the y axis;		 */		public static function scrollSeamlessly(bitmapData : BitmapData,scrollX : int,scrollY : int) : void {			// wrap values			while(scrollX > bitmapData.width) scrollX -= bitmapData.width;			while(scrollX < -bitmapData.width) scrollX += bitmapData.width;			while(scrollY > bitmapData.height) scrollY -= bitmapData.height;			while(scrollY < -bitmapData.height) scrollY += bitmapData.height;    			// the 4 edges of the bitmap			var xPixels : int = Math.abs(scrollX), yPixels : int = Math.abs(scrollY);			var rectR : Rectangle = new Rectangle(bitmapData.width - xPixels, 0, xPixels, bitmapData.height);			var rectL : Rectangle = new Rectangle(0, 0, xPixels, bitmapData.height);			var rectT : Rectangle = new Rectangle(0, 0, bitmapData.width, yPixels);			var rectB : Rectangle = new Rectangle(0, bitmapData.height - yPixels, bitmapData.width, yPixels);			var pointL : Point = new Point(0, 0);			var pointR : Point = new Point(bitmapData.width - xPixels, 0);			var pointT : Point = new Point(0, 0);			var pointB : Point = new Point(0, bitmapData.height - yPixels);    			var tmp : BitmapData = new BitmapData(bitmapData.width, bitmapData.height, bitmapData.transparent, 0x000000);    			scrollX > 0 ? tmp.copyPixels(bitmapData, rectR, pointL) : tmp.copyPixels(bitmapData, rectL, pointR);			bitmapData.scroll(scrollX, 0);			scrollX > 0 ? bitmapData.copyPixels(tmp, rectL, pointL) : bitmapData.copyPixels(tmp, rectR, pointR);    			scrollY > 0 ? tmp.copyPixels(bitmapData, rectB, pointT) : tmp.copyPixels(bitmapData, rectT, pointB);			bitmapData.scroll(0, scrollY);			scrollY > 0 ? bitmapData.copyPixels(tmp, rectT, pointT) : bitmapData.copyPixels(tmp, rectB, pointB);    			tmp.dispose();		}				/**		 * Draws a DisplayObject to a BitmapData		 * @param source The object that you want to draw		 * @param bounds The area of the object that'll be drew, relative to the object's register point		 */		public static function drawObject(source:DisplayObject, area:Rectangle):BitmapData{			var bd:BitmapData = new BitmapData(area.width, area.height, true, 0);			var tm:Matrix = source.transform.matrix.clone();			tm.tx = -area.x;			tm.ty = -area.y;			bd.draw(source,tm);			return bd;		}						/**		 * Gets the average color of a bitmapdata;		 * @param source The bitmapdata tha you want to get the average color		 * 		 * @return uint The average color		 */		public static function getAverageColor(source:BitmapData):uint{
+			var red : Number = 0;
+			var green : Number = 0;
+			var blue : Number = 0;
+			var count : Number = 0;
+			var pixel : Number;
+			for (var x : int = 0; x < source.width; x++) {
+				for (var y : int = 0; y < source.height; y++) {
+					pixel = source.getPixel(x, y);
+					red += pixel >> 16 & 0xFF;
+					green += pixel >> 8 & 0xFF;
+					blue += pixel & 0xFF;
+					count++;
+				}
+			}
+			red /= count;
+			green /= count;
+			blue /= count;
+			return red << 16 | green << 8 | blue;
+		}  		//----------------------------------   		//  Private Functions  		//----------------------------------  			  		//----------------------------------   		//  Event Handlers  		//----------------------------------  			  		//----------------------------------   		//  Getters & Setters  		//----------------------------------	}}
